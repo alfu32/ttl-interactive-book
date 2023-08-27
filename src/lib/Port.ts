@@ -14,4 +14,14 @@ export class Port{
         p.voltage=c.voltage||0
         return p
     }
+    static createPorts(num:number):Array<Port>{
+        return new Array(num).fill(0).map((v,i) => Port.create({num:i+1}))
+    }
+    isOn():boolean{
+        return this.voltage>=3.3
+    }
+    setOn(isOn:boolean):this{
+        this.voltage=isOn?4.8:0
+        return this
+    }
 }

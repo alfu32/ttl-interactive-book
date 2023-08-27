@@ -10,7 +10,7 @@
     $:yt=isLeft?.85:.85
     const dispatch = createEventDispatcher()
     function portClicked(e:MouseEvent){
-        port.voltage=port.voltage?0:3.3
+        port.voltage=port.voltage?0:4.8
         dispatch("toggle",port)
     }
 

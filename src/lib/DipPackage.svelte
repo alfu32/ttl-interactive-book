@@ -2,6 +2,7 @@
     import {createEventDispatcher} from "svelte"
     import type { Port } from "./Port";
     import Pin from "./Pin.svelte";
+    import { Chip } from "./Chip";
     export let ports:Array<Port>=[]
     $:portnum=ports.length>>1
     let u=16
