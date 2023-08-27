@@ -8,8 +8,9 @@
     let chip1=Chip.create({
       ports:Port.createPorts(8),
       changestate:(crt:Array<Port>)=>{
-        crt[3].setOn(crt[1].isOn()&&crt[2].isOn())
-        crt[6].setOn(crt[4].isOn()&&crt[5].isOn())
+        const [gnd,x0,y0,a0,x1,y1,a1,vcc]=crt
+        a0.setOn(x0.isOn()&&y0.isOn())
+        a1.setOn(x1.isOn()&&y1.isOn())
         return crt
       }
     })
