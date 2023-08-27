@@ -8,6 +8,7 @@
     const dispatch = createEventDispatcher()
     function portToggled(e:CustomEvent){
         console.log("pinToggled",e.detail)
+        dispatch("statechanged",ports.map(v => v))
     }
 
 </script>
