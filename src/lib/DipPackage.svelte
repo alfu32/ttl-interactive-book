@@ -6,7 +6,8 @@
     export let ports:Array<Port>=[]
     export let chip:Chip=new Chip()
     $:portnum=chip.ports.length>>1
-    let u=16
+    export let scale=16
+    $:u=scale
     const dispatch = createEventDispatcher()
     function portToggled(e:CustomEvent){
         console.log("pinToggled",e.detail)
@@ -22,7 +23,7 @@
 
 <h3>{chip.name}</h3>
 <div>{chip.description}</div>
-<svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width="640" height="256" viewBox="0 0 640 256">
+<svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={40*u} height={16*u} viewBox="0 0 {40*u} {16*u}">
 <g transform="scale({u})">
     <rect class="dip-package-body" x={3} y={1.5} height={2*portnum-1+1} width="5" rx="0.1" />
     {#each chip.ports as port,i}

@@ -81,14 +81,11 @@
 </script>
 
 <main>
-  <div>head</div>
-  
-    <DipPackage chip={x7400}/>
-    <DipPackage chip={x7402}/>
-    <DipPackage chip={x7404}/>
-    <DipPackage chip={x7408}/>
-    <DipPackage chip={x7410}/>
-
+    <DipPackage scale={10} chip={x7400}/>
+    <DipPackage scale={10} chip={x7402}/>
+    <DipPackage scale={10} chip={x7404}/>
+    <DipPackage scale={10} chip={x7408}/>
+    <DipPackage scale={10} chip={x7410}/>
 </main>
 
 <style lang="scss">
