@@ -2,6 +2,7 @@ export class Port{
     public num:number=1;
     public name:string="";
     public voltage:number=0
+    public isAnalog=true
     constructor(num:number){
         this.num=num
         this.name=`P${num}}`
@@ -24,7 +25,11 @@ export class Port{
         return this.voltage>=3.3
     }
     setOn(isOn:boolean):this{
-        this.voltage=isOn?4.8:0
+        this.voltage=isOn?5:0
+        return this
+    }
+    setAnalog(value:number):this{
+        this.voltage=value
         return this
     }
 }

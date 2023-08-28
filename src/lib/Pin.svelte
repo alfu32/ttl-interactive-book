@@ -14,14 +14,14 @@
     $:cx=isLeft?.75:.25
     const dispatch = createEventDispatcher()
     function portClicked(e:MouseEvent){
-        port.voltage=port.voltage?0:4.8
+        port.voltage=port.voltage?0:5
         dispatch("toggle",port)
     }
 
 </script>
 <g transform='translate({x+1} {2*y})'>
 <rect class="dip-pin-rect" x={0} y={0} width={1} height={1} on:click={portClicked}/>
-<circle cx={cx} cy={cy} class={port.voltage>0?"dip-pin-on":"dip-pin-off"} r={.1}/>
+<circle cx={cx} cy={cy} class={port.voltage>0?"dip-pin-on":"dip-pin-off"} r={.2}/>
 <text class="dip-pin-text" x={xn} y={yn}>{port.num}</text>
 <text class="dip-pin-label" x={xt} y={yt}>{port.name.toUpperCase().padStart(3,'_')}</text>
 </g>
@@ -29,6 +29,12 @@
     .dip-pin-rect{
         fill:#ffffff;
         stroke: #222222;
+        stroke-width: 0.125;
+        cursor:pointer;
+    }
+    .dip-pin-rect:hover{
+        fill:#ddffff;
+        stroke: #555555;
         stroke-width: 0.125;
     }
     .dip-pin-text{
