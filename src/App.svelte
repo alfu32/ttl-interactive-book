@@ -2,15 +2,79 @@
     import { Chip } from "./lib/Chip";
     import DipPackage from "./lib/DipPackage.svelte";
     import { Port } from "./lib/Port";
-    let p4=new Array(8).fill(0).map((v,i) => Port.create({num:i+1}))
-    let p8=new Array(16).fill(0).map((v,i) => Port.create({num:i+1}))
-    let p10=new Array(20).fill(0).map((v,i) => Port.create({num:i+1}))
-    let chip1=Chip.create({
-      ports:Port.createPorts(8),
+    let x7400=Chip.create({
+      ports:Port.createPortsFromArray("a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc".split(',')),
+      name:"7400",
+      description:"Quad Two Input NAND Gate",
       changestate:(crt:Array<Port>)=>{
-        const [gnd,x0,y0,a0,x1,y1,a1,vcc]=crt
-        a0.setOn(x0.isOn()&&y0.isOn())
-        a1.setOn(x1.isOn()&&y1.isOn())
+        const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
+        y1.setOn(!(a1.isOn()&&b1.isOn()))
+        y2.setOn(!(a2.isOn()&&b2.isOn()))
+        y3.setOn(!(a3.isOn()&&b3.isOn()))
+        y4.setOn(!(a4.isOn()&&b4.isOn()))
+        gnd.setOn(false)
+        vcc.setOn(true)
+        return crt
+      }
+    })
+    let x7402=Chip.create({
+      ports:Port.createPortsFromArray("a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc".split(',')),
+      name:"7402",
+      description:"QUAD 2-INPUT NOR GATE",
+      changestate:(crt:Array<Port>)=>{
+        const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
+        y1.setOn(!(a1.isOn() || b1.isOn()))
+        y2.setOn(!(a2.isOn() || b2.isOn()))
+        y3.setOn(!(a3.isOn() || b3.isOn()))
+        y4.setOn(!(a4.isOn() || b4.isOn()))
+        gnd.setOn(false)
+        vcc.setOn(true)
+        return crt
+      }
+    })
+    let x7404=Chip.create({
+      ports:Port.createPortsFromArray("a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc".split(',')),
+      name:"7404",
+      description:"Hex Inverter",
+      changestate:(crt:Array<Port>)=>{
+        const [a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc]=crt
+        y1.setOn(!a1.isOn())
+        y2.setOn(!a2.isOn())
+        y3.setOn(!a3.isOn())
+        y4.setOn(!a4.isOn())
+        y5.setOn(!a5.isOn())
+        y6.setOn(!a6.isOn())
+        gnd.setOn(false)
+        vcc.setOn(true)
+        return crt
+      }
+    })
+    let x7408=Chip.create({
+      ports:Port.createPortsFromArray("a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc".split(',')),
+      name:"7408",
+      description:"Quad Two Input AND Gate",
+      changestate:(crt:Array<Port>)=>{
+        const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
+        y1.setOn( a1.isOn() && b1.isOn() )
+        y2.setOn( a2.isOn() && b2.isOn() )
+        y3.setOn( a3.isOn() && b3.isOn() )
+        y4.setOn( a4.isOn() && b4.isOn() )
+        gnd.setOn(false)
+        vcc.setOn(true)
+        return crt
+      }
+    })
+    let x7410=Chip.create({
+      ports:Port.createPortsFromArray("a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc".split(',')),
+      name:"7410",
+      description:"Triple 3-Input NAND Gate",
+      changestate:(crt:Array<Port>)=>{
+        const [a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc]=crt
+        y1.setOn(!(a1.isOn()&&b1.isOn()&&c1.isOn()))
+        y2.setOn(!(a2.isOn()&&b2.isOn()&&c2.isOn()))
+        y3.setOn(!(a3.isOn()&&b3.isOn()&&c3.isOn()))
+        gnd.setOn(false)
+        vcc.setOn(true)
         return crt
       }
     })
@@ -18,9 +82,13 @@
 
 <main>
   <div>head</div>
-  <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width="640" height="160" viewBox="0 0 640 160">
-    <DipPackage ports={chip1.ports} on:statechanged={e => chip1.ports=chip1.changestate(chip1.ports)}/>
-  </svg>
+  
+    <DipPackage chip={x7400}/>
+    <DipPackage chip={x7402}/>
+    <DipPackage chip={x7404}/>
+    <DipPackage chip={x7408}/>
+    <DipPackage chip={x7410}/>
+
 </main>
 
 <style lang="scss">
