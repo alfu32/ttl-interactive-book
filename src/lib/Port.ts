@@ -24,6 +24,9 @@ export class Port{
     isOn():boolean{
         return this.voltage>=3.3
     }
+    asNum():number{
+        return this.voltage>=3.3?1:0
+    }
     setOn(isOn:boolean):this{
         this.voltage=isOn?5:0
         return this

@@ -209,23 +209,23 @@
         return crt
       }
     })
-    let x7468_data={
+    let x7469_data={
       a:0,
       b:0,
     }
-    let x7468=Chip.create({
+    let x7469=Chip.create({
       ports:Port.createPortsFromArray("clka1,qb1,qd1,nclr1,qc2,nc,qa2,gnd,clk2,qb2,nclr2,qd2,qc1,qa1,clkb1,vcc".split(',')),
-      name:"7468",
+      name:"7469",
       description:"DUAL 4-BIT DECADE OR BINARY COUNTERS",
       changestate:(crt:Array<Port>)=>{
         const [clka1,qb1,qd1,nclr1,qc2,nc,qa2,gnd,clk2,qb2,nclr2,qd2,qc1,qa1,clkb1,vcc]=crt
         clka1.setOn(!clka1.isOn())
         clkb1.setOn(!clkb1.isOn())
-        let a=(x7468_data.a+1)%16
-        let b=(x7468_data.b+1)%16
+        let a=(x7469_data.a+1)%16
+        let b=(x7469_data.b+1)%16
         a=nclr1.isOn()?a:0
         b=nclr2.isOn()?b:0
-        x7468_data={a,b}
+        x7469_data={a,b}
         qa1.setOn((a&1)==1)
         qb1.setOn((a&2)==2)
         qc1.setOn((a&4)==4)
@@ -234,6 +234,25 @@
         qb2.setOn((b&2)==2)
         qc2.setOn((b&4)==4)
         qd2.setOn((b&8)==8)
+        gnd.setOn(false)
+        vcc.setOn(true)
+        return crt
+      }
+    })
+    let x7483=Chip.create({
+      ports:Port.createPortsFromArray("a4,s3,a3,b3,vcc,s2,b2,a2,s1,a1,b1,gnd,c0,c4,s4,b4".split(',')),
+      name:"7483",
+      description:"4-BIT BINARY FULL ADDERS WITH FAST CARRY",
+      changestate:(crt:Array<Port>)=>{
+        const [a4,s3,a3,b3,vcc,s2,b2,a2,s1,a1,b1,gnd,c0,c4,s4,b4]=crt
+        let a=a4.asNum()*8+a3.asNum()*4+a2.asNum()*2+a1.asNum()*1
+        let b=b4.asNum()*8+b3.asNum()*4+b2.asNum()*2+b1.asNum()*1
+        let s=a+b+c0.asNum()
+        s1.setOn((s&1)==1)
+        s2.setOn((s&2)==2)
+        s3.setOn((s&4)==4)
+        s4.setOn((s&8)==8)
+        c4.setOn(s>15)
         gnd.setOn(false)
         vcc.setOn(true)
         return crt
@@ -266,12 +285,13 @@
       <text class="seven-seg-display-txt" x={.75} y={6.5}>{x7447Value.toString(16)}</text>
       </g>
     </DipPackage>
-    <DipPackage scale={16} chip={x7468}>
+    <DipPackage scale={16} chip={x7469}>
       <g transform="translate(3,7)">
-        <text class="seven-seg-display-txt" x={8.75} y={-4.5}>CNT1:{x7468_data.a.toString(16)}</text>
-        <text class="seven-seg-display-txt" x={8.75} y={-3.5}>CNT2:{x7468_data.b.toString(16)}</text>
+        <text class="seven-seg-display-txt" x={8.75} y={-4.5}>CNT1:{x7469_data.a.toString(16)}</text>
+        <text class="seven-seg-display-txt" x={8.75} y={-3.5}>CNT2:{x7469_data.b.toString(16)}</text>
       </g>
     </DipPackage>
+    <DipPackage scale={16} chip={x7483}/>
 </main>
 
 <style lang="scss">
