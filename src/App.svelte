@@ -258,6 +258,17 @@
         return crt
       }
     })
+    let x7485=Chip.create({
+      ports:Port.createPortsFromArray("b3,agti,aeqi,alti,agto,aeqo,alto,gnd,b0,a0,b1,a1,b2,a2,a3,vcc".split(',')),
+      name:"7485",
+      description:"4-BIT MAGNITUDE COMPARATOR",
+      changestate:(crt:Array<Port>)=>{
+        const [b3,agti,aeqi,alti,agto,aeqo,alto,gnd,b0,a0,b1,a1,b2,a2,a3,vcc]=crt
+        gnd.setOn(false)
+        vcc.setOn(true)
+        return crt
+      }
+    })
 </script>
 
 <main class="dip-card-container">
@@ -292,6 +303,7 @@
       </g>
     </DipPackage>
     <DipPackage scale={16} chip={x7483}/>
+    <DipPackage scale={16} chip={x7485}/>
 </main>
 
 <style lang="scss">
