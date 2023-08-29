@@ -1,16 +1,19 @@
 <script lang="ts">
-    import {createEventDispatcher, onMount} from "svelte"
+    import {createEventDispatcher, onDestroy, onMount} from "svelte"
     import type { Port } from "./Port";
     import Pin from "./Pin.svelte";
     import { Chip } from "./Chip";
+    import { Scheduler } from "./Scheduler";
     export let ports:Array<Port>=[]
     export let chip:Chip=new Chip()
     $:portnum=chip.ports.length>>1
     export let scale=16
+    let scheduler:Scheduler
     $:u=scale
     let astable=false
     let count=0
     const dispatch = createEventDispatcher()
+    let to=0
     function portToggled(e:CustomEvent){
         if(!chip.stable){
         //     return ;//alert("chip is unstable, wait for HALT")
@@ -19,16 +22,25 @@
         chip=chip.next()
         count+=1
         if(!chip.stable){
-            setTimeout(()=>portToggled(e),1000)
+            clearTimeout(to)
+            to=setTimeout(()=>portToggled(e),1000)
             dispatch("statechanged",chip)
         }
     }
     onMount(()=>{
+        console.log("created",chip.name)
+        scheduler=Scheduler.create()
         chip=chip.next()
         if(!chip.stable){
-            setTimeout(()=>portToggled({detail:ports[0]} as unknown as CustomEvent),1000)
+            clearTimeout(to)
+            to=setTimeout(()=>portToggled({detail:ports[0]} as unknown as CustomEvent),1000)
             dispatch("statechanged",chip)
         }
+    })
+    
+    onDestroy(()=>{
+        console.log("destroyed",chip.name)
+        scheduler.close()
     })
 </script>
 <div class="dip-card">
@@ -44,8 +56,8 @@
 <g transform="scale({u})">
     <rect class="dip-package-body" x={3} y={1.5} height={2*portnum-1+1} width="5" rx="0.1" />
     {#if !chip.stable}
-    <rect class="dip-package-body" x={12} y={0} width={1} height={1}/>
-    <text class="dip-text" x={0} y={0}>{count}</text>
+    <!--rect class="dip-package-body" x={12} y={0} width={1} height={1}/-->
+    <text class="dip-text" x={1} y={1}>Stabilizing (count:{count})</text>
     {/if}
     {#each chip.ports as port,i}
         <Pin port={port} packageNum={portnum} on:toggle={portToggled}/>
@@ -57,6 +69,23 @@
 </div>
 
 <style lang="scss">
+
+
+    .dip-card {
+        /* Define the width and height for the cards */
+        width: 400px;
+        height: 500px;
+        /* Basic styling for the cards */
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Center the card content */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     .dip-card{
         display:inline-block;
         box-sizing: border-box;
