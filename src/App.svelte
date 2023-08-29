@@ -185,7 +185,8 @@
         return crt
       }
     })
-    let x7447Ports=Port.createPortsFromArray("a,b,c,d,e,f,g".split(','))
+    let x7447Ports=Port.createPortsFromArray("a,b,c,d,e,f,g,d1,d2,d3,d4".split(','))
+    let x7447Value=0
     let x7447=Chip.create({
       ports:Port.createPortsFromArray("d2,d3,lt,nbi,nbo,d4,d1,gnd,e,d,c,b,a,g,f,vcc".split(',')),
       name:"7447",
@@ -201,7 +202,38 @@
         f.setOn([0,4,5,6,8,9,10,11,12,14,15].indexOf(num)>-1)
         g.setOn([2,3,4,5,6,8,9,10,11,13,14,15].indexOf(num)>-1)
         x7447Ports=[crt[12],crt[11],crt[10],crt[9],crt[8],crt[14],crt[13]]
+        x7447Value=num
         console.log("bcd decoder",num)
+        gnd.setOn(false)
+        vcc.setOn(true)
+        return crt
+      }
+    })
+    let x7468_data={
+      a:0,
+      b:0,
+    }
+    let x7468=Chip.create({
+      ports:Port.createPortsFromArray("clka1,qb1,qd1,nclr1,qc2,nc,qa2,gnd,clk2,qb2,nclr2,qd2,qc1,qa1,clkb1,vcc".split(',')),
+      name:"7468",
+      description:"DUAL 4-BIT DECADE OR BINARY COUNTERS",
+      changestate:(crt:Array<Port>)=>{
+        const [clka1,qb1,qd1,nclr1,qc2,nc,qa2,gnd,clk2,qb2,nclr2,qd2,qc1,qa1,clkb1,vcc]=crt
+        clka1.setOn(!clka1.isOn())
+        clkb1.setOn(!clkb1.isOn())
+        let a=(x7468_data.a+1)%16
+        let b=(x7468_data.b+1)%16
+        a=nclr1.isOn()?a:0
+        b=nclr2.isOn()?b:0
+        x7468_data={a,b}
+        qa1.setOn((a&1)==1)
+        qb1.setOn((a&2)==2)
+        qc1.setOn((a&4)==4)
+        qd1.setOn((a&8)==8)
+        qa2.setOn((b&1)==1)
+        qb2.setOn((b&2)==2)
+        qc2.setOn((b&4)==4)
+        qd2.setOn((b&8)==8)
         gnd.setOn(false)
         vcc.setOn(true)
         return crt
@@ -209,7 +241,7 @@
     })
 </script>
 
-<main>
+<main class="dip-card-container">
     <DipPackage scale={16} chip={dingDong}/>
     <DipPackage scale={16} chip={x7400}/>
     <DipPackage scale={16} chip={x7402}/>
@@ -231,6 +263,13 @@
       <line class="seven-seg-display {x7447Ports[4].isOn()?'on':'off'}" id="e" x1={1} y1={3} x2={1} y2={5}/>
       <line class="seven-seg-display {x7447Ports[5].isOn()?'on':'off'}" id="f" x1={1} y1={1} x2={1} y2={3}/>
       <line class="seven-seg-display {x7447Ports[6].isOn()?'on':'off'}" id="g" x1={1} y1={3} x2={3} y2={3}/>
+      <text class="seven-seg-display-txt" x={.75} y={6.5}>{x7447Value.toString(16)}</text>
+      </g>
+    </DipPackage>
+    <DipPackage scale={16} chip={x7468}>
+      <g transform="translate(3,7)">
+        <text class="seven-seg-display-txt" x={8.75} y={-4.5}>CNT1:{x7468_data.a.toString(16)}</text>
+        <text class="seven-seg-display-txt" x={8.75} y={-3.5}>CNT2:{x7468_data.b.toString(16)}</text>
       </g>
     </DipPackage>
 </main>
@@ -246,4 +285,24 @@
   .seven-seg-display.off{
     stroke: #5222;
   }
+  .seven-seg-display-txt{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1px;
+    stroke: #0000;
+    fill: #f22;
+    stroke-width: .01;
+  }
+  .dip-card-container {
+    /* Set up the container as a flex container */
+    display: flex;
+    /* Wrap the cards if they don't fit in a single row */
+    flex-wrap: wrap;
+    /* Space between the cards */
+    gap: 16px;
+    /* Align items in a centered manner */
+    align-items: center;
+    /* Justify content to start (you can change this as per your requirement) */
+    justify-content: flex-start;
+}
+
 </style>
