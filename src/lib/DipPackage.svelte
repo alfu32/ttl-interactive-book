@@ -14,6 +14,10 @@
     $:u=scale
     let astable=false
     let count=0
+    function getColor(i:number){
+        const colors="#c00,#c50,#cc0,#0c0,#0c5,#0cc,#00c,#50c,#c0c".split(",")
+        return colors[i%colors.length]
+    }
     const dispatch = createEventDispatcher()
     let to=0
     function portToggled(e:CustomEvent){
@@ -66,11 +70,28 @@
     {/each}
     <text class="dip-text" transform="rotate(-90)" x={-7} y={5}>{chip.name.padStart(10,'_')}</text>
     <slot></slot>
-    {#each Object.entries(hist.svgPaths()) as [name,d],i}
-    <g transform="translate(0 {2*(portnum)+i+2})">
-        <text class="dip-text" x={16} y={0}>{name}</text>
-        <path stroke="#000" stroke-width={.1} fill="#0000" d={d}/>
-    </g>
+    {#each Object.entries(hist.index) as [name,histo],i}
+    {#if i%portnum === i}
+        <g transform="translate(0 {2*(portnum)+i+2})" stroke={getColor(i)}>
+            <text class="dip-graph-text" x={5} y={0.5}>{name.toUpperCase()}</text>
+            <g transform="translate(0 0.6)">
+                <g transform="scale(1)">
+                    <path class="dip-graph-path" d={histo.svgPath()}/>
+                    <line class="dip-graph-axis" x1={0} y1={0} x2={7.5} y2={0}/>
+                </g>
+            </g>
+        </g>
+    {:else}
+        <g transform="translate(8 {3*(portnum)-(i%portnum)+1})" stroke={getColor(i)}>
+            <text class="dip-graph-text" x={0} y={0.5}>{name.toUpperCase()}</text>
+            <g transform="translate(2.5 0.6)">
+                <g transform="scale(1)">
+                    <path class="dip-graph-path" d={histo.svgPath()}/>
+                    <line class="dip-graph-axis" x1={-2.5} y1={0} x2={5} y2={0}/>
+                </g>
+            </g>
+        </g>
+    {/if}
     {/each}
 </g>
 </svg>
@@ -123,6 +144,22 @@
         stroke: #ffffff;
         stroke-width: 0.0125;
         font-size: .85px;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    .dip-graph-path{
+        stroke-width:.025;
+        fill:#0000;
+    }
+    .dip-graph-axis{
+        stroke:#000;
+        stroke-width:.0125;
+        fill:#0000;
+    }
+    .dip-graph-text{
+        fill:#222222;
+        stroke: #ffffff;
+        stroke-width: 0.0125;
+        font-size: .50px;
         font-family: 'Courier New', Courier, monospace;
     }
 </style>

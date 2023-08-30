@@ -55,49 +55,80 @@ export class Ports extends Array<Port>{
     }
 }
 export declare type bit=0|1
+export declare type HistoryPoint={timestamp:number,value:bit}
+export class PortHistoryGraph{
+    num:number=0
+    name:string=""
+    histo:Array<HistoryPoint>=[]
+    histoLength=16
+    copy():PortHistoryGraph{
+        const phg=new PortHistoryGraph()
+        phg.num=this.num
+        phg.name=this.name
+        phg.histo=this.histo
+        phg.histoLength=this.histoLength
+        return phg
+    }
+    static fromPort(port:Port):PortHistoryGraph{
+        const phg=new PortHistoryGraph()
+        phg.num=port.num
+        phg.name=port.name
+        return phg
+    }
+    add(port:Port):PortHistoryGraph{
+        if(this.histo.length==this.histoLength){
+            this.histo.shift()    
+        }
+        this.histo.push({timestamp:this.histo.length,value:port.isOn()?1:0})
+        return this
+    }
+    graph():Array<HistoryPoint>{
+        const r:Array<HistoryPoint>=this.histo
+            .map( v => ({timestamp:v.timestamp,value:v.value}))
+        return r
+    }
+    svgPath():string{
+        const ZERO=-0.2
+        const STEP=0.3
+        const ONE=-0.8
+        const vals = this.graph()
+        return vals.reduce( (path,kv,i,a) =>{
+            return `${path} L${i*STEP} ${(i==0)?ZERO:a[i-1].value*ONE} L${i*STEP} ${kv.value*ONE}`
+        },`M0 ${(vals[0]||{v:0}).value*ONE}`)
+    }
+}
 export class PortsHistoryGraph{
-    histo:Array<{timestamp:number,values:{[key:string]:bit}}>=[]
-    keys:{[key:string]:boolean}={}
+    index:{[key:string]:PortHistoryGraph}={}
     histoLength=16
     copy():PortsHistoryGraph{
         const phg=new PortsHistoryGraph()
-        phg.histo=this.histo
-        phg.keys=this.keys
+        phg.index=this.index
         phg.histoLength=this.histoLength
         return phg
     }
     add(ports:Ports):PortsHistoryGraph{
-        const kv=ports.reduce((acc,v,i,a)=>{
-            acc[v.name]=v.isOn()?1:0
-            this.keys[v.name]=true
-            return acc
-        },{} as {[key:string]:bit})
-        if(this.histo.length==this.histoLength){
-            this.histo.shift()    
-        }
-        this.histo.push({timestamp:this.histo.length,values:kv})
+        const timestamp=Date.now()
+        const kv=ports.forEach((port,i,a)=>{
+            this.index[port.name]=this.index[port.name]||PortHistoryGraph.fromPort(port)
+            this.index[port.name].add(port)
+        })
         return this
     }
-    graph(key:string):Array<{t:number,v:bit}>{
-        const r:Array<{t:number,v:bit}>=this.histo
-            .map( v => ({t:v.timestamp,v:v.values[key]||0}))
-        return r
+    graph(key:string):Array<HistoryPoint>{
+        return this.index[key].graph()
     }
-    graphs():{[key:string]:Array<{t:number,v:bit}>} {
-        return Object.keys(this.keys)
+    graphs():{[key:string]:Array<HistoryPoint>} {
+        return Object.keys(this.index)
             .reduce((agg,key) => {
-                agg[key]=this.graph(key)
+                agg[key]=this.index[key].graph()
                 return agg
-            },{} as {[key:string]:Array<{t:number,v:bit}>})
+            },{} as {[key:string]:Array<HistoryPoint>})
     }
     svgPath(key:string):string{
-        const vals = this.graph(key)
-        return vals.reduce( (path,kv,i,a) =>{
-            return `${path} L${i} ${i==0?0:a[i-1].v*.7} L${i} ${kv.v*.7}`
-        },`M0 ${(vals[0]||{v:0}).v}`)
+        return this.index[key].svgPath()
     }
     svgPaths():{[key:string]:string} {
-        return Object.keys(this.keys)
+        return Object.keys(this.index)
             .reduce((agg,key) => {
                 agg[key]=this.svgPath(key)
                 return agg

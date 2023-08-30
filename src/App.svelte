@@ -1,7 +1,9 @@
 <script lang="ts">
+    import BinaryDisplay from "./lib/BinaryDisplay.svelte";
     import { Chip } from "./lib/Chip";
     import DipPackage from "./lib/DipPackage.svelte";
     import { Port, Ports } from "./lib/Port";
+    import SevenSegmentDisplay from "./lib/SevenSegmentDisplay.svelte";
     let dingDong=Chip.create({
       ports:Ports.createPortsFromNames("aa,na,gnd,bb,nb,vcc".split(',')),
       name:"74999",
@@ -239,6 +241,11 @@
         return crt
       }
     })
+    let x7483_data={
+      a:0,
+      b:0,
+      s:0,
+    }
     let x7483=Chip.create({
       ports:Ports.createPortsFromNames("a4,s3,a3,b3,vcc,s2,b2,a2,s1,a1,b1,gnd,c0,c4,s4,b4".split(',')),
       name:"7483",
@@ -248,6 +255,7 @@
         let a=a4.asNum()*8+a3.asNum()*4+a2.asNum()*2+a1.asNum()*1
         let b=b4.asNum()*8+b3.asNum()*4+b2.asNum()*2+b1.asNum()*1
         let s=a+b+c0.asNum()
+        x7483_data={a,b,s}
         s1.setOn((s&1)==1)
         s2.setOn((s&2)==2)
         s3.setOn((s&4)==4)
@@ -261,6 +269,7 @@
     let x7485_data={
       a:0,
       b:0,
+      s:0,
     }
     let x7485=Chip.create({
       ports:Ports.createPortsFromNames("b3,agti,aeqi,alti,agto,aeqo,alto,gnd,b0,a0,b1,a1,b2,a2,a3,vcc".split(',')),
@@ -270,7 +279,8 @@
         const [b3,agti,aeqi,alti,agto,aeqo,alto,gnd,b0,a0,b1,a1,b2,a2,a3,vcc]=crt
         let a=a3.asNum()*8+a2.asNum()*4+a1.asNum()*2+a0.asNum()*1
         let b=b3.asNum()*8+b2.asNum()*4+b1.asNum()*2+b0.asNum()*1
-        x7485_data={a,b}
+        let s=a<b?9:a==b?0:1
+        x7485_data={a,b,s}
         agto.setOn(agti.isOn()&&(a>b))
         aeqo.setOn(aeqi.isOn()&&(a===b))
         alto.setOn(alti.isOn()&&(a<b))
@@ -296,42 +306,44 @@
     <DipPackage scale={20} chip={x7425}/>
     <DipPackage scale={20} chip={x7447}>
       <g transform="translate(3,7)">
-      <line class="seven-seg-display {x7447Ports[0].isOn()?'on':'off'}" id="a" x1={1} y1={1} x2={3} y2={1}/>
-      <line class="seven-seg-display {x7447Ports[1].isOn()?'on':'off'}" id="b" x1={3} y1={1} x2={3} y2={3}/>
-      <line class="seven-seg-display {x7447Ports[2].isOn()?'on':'off'}" id="c" x1={3} y1={3} x2={3} y2={5}/>
-      <line class="seven-seg-display {x7447Ports[3].isOn()?'on':'off'}" id="d" x1={1} y1={5} x2={3} y2={5}/>
-      <line class="seven-seg-display {x7447Ports[4].isOn()?'on':'off'}" id="e" x1={1} y1={3} x2={1} y2={5}/>
-      <line class="seven-seg-display {x7447Ports[5].isOn()?'on':'off'}" id="f" x1={1} y1={1} x2={1} y2={3}/>
-      <line class="seven-seg-display {x7447Ports[6].isOn()?'on':'off'}" id="g" x1={1} y1={3} x2={3} y2={3}/>
+      <SevenSegmentDisplay digit={x7447Value}/>
       <text class="seven-seg-display-txt" x={.75} y={6.5}>{x7447Value.toString(16)}</text>
       </g>
     </DipPackage>
     <DipPackage scale={20} chip={x7469}>
-      <g transform="translate(3,7)">
+      <g transform="scale(.5)">
+        <SevenSegmentDisplay digit={x7469_data.a} x={24} y={3}/>
+        <SevenSegmentDisplay digit={x7469_data.b} x={28} y={3}/>
         <text class="seven-seg-display-txt" x={8.75} y={-4.5}>CNT1:{x7469_data.a.toString(16)}</text>
         <text class="seven-seg-display-txt" x={8.75} y={-3.5}>CNT2:{x7469_data.b.toString(16)}</text>
       </g>
     </DipPackage>
-    <DipPackage scale={20} chip={x7483}/>
+    <DipPackage scale={20} chip={x7483}>
+      <g transform="scale(.5)">
+        <SevenSegmentDisplay digit={x7483_data.a} x={20} y={3}/>
+        <SevenSegmentDisplay digit={x7483_data.b} x={23.5} y={3}/>
+        <SevenSegmentDisplay digit={x7483_data.s} x={27} y={3}/>
+        <BinaryDisplay bits={4} height={0} digit={x7483_data.a} x={22} y={9.2}/>
+        <BinaryDisplay bits={4} height={0} digit={x7483_data.b} x={22} y={10.5}/>
+        <BinaryDisplay bits={4} height={0} digit={x7483_data.s} x={22} y={11.9}/>
+        <text class="seven-seg-display-txt" x={8.75} y={-4.5}>A:{x7483_data.a.toString(16)}</text>
+        <text class="seven-seg-display-txt" x={8.75} y={-3.5}>B:{x7483_data.b.toString(16)}</text>
+        <text class="seven-seg-display-txt" x={8.75} y={-2.5}>S:{(x7483_data.s).toString(16)}</text>
+      </g>
+    </DipPackage>
     <DipPackage scale={20} chip={x7485}>
-      <g transform="translate(3,7)">
+      <g transform="scale(.5)">
+        <SevenSegmentDisplay digit={x7485_data.a} x={20} y={3}/>
+        <SevenSegmentDisplay digit={x7485_data.b} x={24} y={3}/>
+        <BinaryDisplay bits={4} height={0} digit={x7485_data.s} x={21} y={9}/>
         <text class="seven-seg-display-txt" x={8.75} y={-4.5}>A:{x7485_data.a.toString(16)}</text>
         <text class="seven-seg-display-txt" x={8.75} y={-3.5}>B:{x7485_data.b.toString(16)}</text>
+        <text class="seven-seg-display-txt" x={8.75} y={-2.5}>S:{(x7485_data.s).toString(16)}</text>
       </g>
     </DipPackage>
 </main>
 
 <style lang="scss">
-  .seven-seg-display{
-    stroke-width: .2;
-      stroke: #fee;
-  }
-  .seven-seg-display.on{
-    stroke: #f22;
-  }
-  .seven-seg-display.off{
-    stroke: #5222;
-  }
   .seven-seg-display-txt{
     font-family: 'Courier New', Courier, monospace;
     font-size: 1px;

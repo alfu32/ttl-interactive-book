@@ -1,6 +1,6 @@
 <script lang="ts">
     import {createEventDispatcher} from "svelte"
-    import { Port } from "./Port";
+    import { Port, PortHistoryGraph } from "./Port";
     export let port:Port=new Port(-1)
     export let packageNum=4
     $:isLeft=port.num<=packageNum
