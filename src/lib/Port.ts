@@ -93,7 +93,7 @@ export class PortsHistoryGraph{
     svgPath(key:string):string{
         const vals = this.graph(key)
         return vals.reduce( (path,kv,i,a) =>{
-            return `${path} L${kv.t} ${i==0?0:a[i-1].v} L${kv.t} ${kv.v}`
+            return `${path} L${i} ${i==0?0:a[i-1].v*.7} L${i} ${kv.v*.7}`
         },`M0 ${(vals[0]||{v:0}).v}`)
     }
     svgPaths():{[key:string]:string} {

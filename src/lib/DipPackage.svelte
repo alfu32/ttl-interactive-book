@@ -58,7 +58,7 @@
     curentState :{chip.curentState}
 </pre-->
 
-<svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={16*u} height={4*(portnum)*u+4} viewBox="0 0 {16*u} {4*(portnum)*u+4}">
+<svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={16*u} height={4*(portnum+1)*u+2} viewBox="0 0 {16*u} {4*(portnum+1)*u+2}">
 <g transform="scale({u})">
     <rect class="dip-package-body" x={3} y={1.5} height={2*portnum-1+1} width="5" rx="0.1" />
     {#each chip.ports as port,i}
@@ -68,7 +68,7 @@
     <slot></slot>
     {#each Object.entries(hist.svgPaths()) as [name,d],i}
     <g transform="translate(0 {2*(portnum)+i+2})">
-        <text class="dip-text" x={-7} y={0}>{name}</text>
+        <text class="dip-text" x={16} y={0}>{name}</text>
         <path stroke="#000" stroke-width={.1} fill="#0000" d={d}/>
     </g>
     {/each}
@@ -86,7 +86,7 @@
     .dip-card {
         /* Define the width and height for the cards */
         width: 400px;
-        height: 500px;
+        height: 700px;
         /* Basic styling for the cards */
         background-color: #f5f5f5;
         border: 1px solid #ddd;
