@@ -5,9 +5,9 @@
     import { Port, Ports } from "./lib/Port";
     import SevenSegmentDisplay from "./lib/SevenSegmentDisplay.svelte";
     let dingDong=Chip.create({
-      ports:Ports.createPortsFromNames("aa,na,gnd,bb,nb,vcc".split(',')),
+      ports:Ports.createPortsFromNames("ding,nding,gnd,dong,ndong,vcc".split(',')),
       name:"74999",
-      description:"Ding Dong",
+      description:"Dual One Bit Ding Dong",
       changestate:(crt:Ports)=>{
         const [aa,na,gnd,bb,nb,vcc]=crt
         if(vcc.isOn()){

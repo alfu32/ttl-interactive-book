@@ -94,7 +94,7 @@ export class PortHistoryGraph{
         const vals = this.graph()
         return vals.reduce( (path,kv,i,a) =>{
             return `${path} L${i*STEP} ${(i==0)?ZERO:a[i-1].value*ONE} L${i*STEP} ${kv.value*ONE}`
-        },`M0 ${(vals[0]||{v:0}).value*ONE}`)
+        },`M${0} ${(vals[0]||{v:0}).value*ONE}`)
     }
 }
 export class PortsHistoryGraph{
