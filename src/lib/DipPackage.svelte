@@ -1,12 +1,12 @@
 <script lang="ts">
     import {createEventDispatcher, onDestroy, onMount} from "svelte"
-    import { Ports, type Port } from "./Port";
+    import { Ports, type Port, PortsHistoryGraph } from "./Port";
     import Pin from "./Pin.svelte";
     import { Chip } from "./Chip";
     import { Scheduler } from "./Scheduler";
     export let ports:Ports=Ports.fromArray([])
 
-    let hist:Array<Ports>=[]
+    let hist:PortsHistoryGraph=new PortsHistoryGraph()
     export let chip:Chip=new Chip()
     $:portnum=chip.ports.length>>1
     export let scale=24
@@ -21,7 +21,7 @@
         //     return ;//alert("chip is unstable, wait for HALT")
         }
         //console.log("pinToggled",e.detail)
-        hist.push(chip.ports.copy())
+        hist=hist.add(chip.ports.copy()).copy()
         chip=chip.next()
 
         count+=1
@@ -58,7 +58,7 @@
     curentState :{chip.curentState}
 </pre-->
 
-<svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={16*u} height={2*(portnum)*u+2} viewBox="0 0 {16*u} {2*(portnum+2)*u}">
+<svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={16*u} height={4*(portnum)*u+4} viewBox="0 0 {16*u} {4*(portnum)*u+4}">
 <g transform="scale({u})">
     <rect class="dip-package-body" x={3} y={1.5} height={2*portnum-1+1} width="5" rx="0.1" />
     {#each chip.ports as port,i}
@@ -66,6 +66,12 @@
     {/each}
     <text class="dip-text" transform="rotate(-90)" x={-7} y={5}>{chip.name.padStart(10,'_')}</text>
     <slot></slot>
+    {#each Object.entries(hist.svgPaths()) as [name,d],i}
+    <g transform="translate(0 {2*(portnum)+i+2})">
+        <text class="dip-text" x={-7} y={0}>{name}</text>
+        <path stroke="#000" stroke-width={.1} fill="#0000" d={d}/>
+    </g>
+    {/each}
 </g>
 </svg>
 {#if !chip.stable}
