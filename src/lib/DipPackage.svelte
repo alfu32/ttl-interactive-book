@@ -1,10 +1,11 @@
 <script lang="ts">
     import {createEventDispatcher, onDestroy, onMount} from "svelte"
-    import type { Port, Ports } from "./Port";
+    import { Ports, type Port } from "./Port";
     import Pin from "./Pin.svelte";
     import { Chip } from "./Chip";
     import { Scheduler } from "./Scheduler";
-    export let ports:Ports=[]
+    export let ports:Ports=Ports.fromArray([])
+
     let hist:Array<Ports>=[]
     export let chip:Chip=new Chip()
     $:portnum=chip.ports.length>>1
@@ -20,7 +21,9 @@
         //     return ;//alert("chip is unstable, wait for HALT")
         }
         //console.log("pinToggled",e.detail)
+        hist.push(chip.ports.copy())
         chip=chip.next()
+
         count+=1
         if(!chip.stable){
             clearTimeout(to)
