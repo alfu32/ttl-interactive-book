@@ -301,12 +301,26 @@
         const [ser,b,c,vcc,d,mode,clk1,clk2,qd,qc,gnd,qb,qa,a]=crt
         let v=d.asNum()*8+c.asNum()*4+b.asNum()*2+a.asNum()*1
         let u=qd.asNum()*8+qc.asNum()*4+qb.asNum()*2+qa.asNum()*1
-        if(clk1.isOn()){
-
+        if(vcc.isOn()){
+          clk1.setOn(!clk1.isOn())
+          clk2.setOn(!clk2.isOn())
+          if(clk1.isOn()){
+            const w=a.isOn()
+            a.setOn(b.isOn())
+            b.setOn(c.isOn())
+            c.setOn(d.isOn())
+            d.setOn(w)
+          }
+          if(clk2.isOn()){
+            const w=qa.isOn()
+            qa.setOn(qb.isOn())
+            qb.setOn(qc.isOn())
+            qc.setOn(qd.isOn())
+            qd.setOn(w)
+          }
+          x7495_data={v,u}
         }
-        x7495_data={v,u}
         gnd.setOn(false)
-        vcc.setOn(true)
         return crt
       }
     })
