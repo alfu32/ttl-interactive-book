@@ -1,4 +1,4 @@
-import type { Port, Ports } from "./Port";
+import { Ports, type Port } from "./Port";
 
 export type StateChanger<T>=(current:T)=>T
 export class Chip{
@@ -22,12 +22,12 @@ export class Chip{
         return this.ports.map( p => p.voltage).join("|")
     }
     public stable=false
-    ports:Ports=[]
+    ports:Ports=Ports.fromArray([])
     name=""
     description=""
     public curentState=""
     public prevState=""
-    public _changestate:StateChanger<Ports>=a => a.map(v=>v)
+    public _changestate:StateChanger<Ports>=a => Ports.fromArray(a.map(v=>v))
     static create(c:{ports:Ports,name?:string,description?:string,changestate:StateChanger<Ports>,curentState?:string,prevState?:string,}){
         const chip=new Chip()
         chip.ports=c.ports||[]

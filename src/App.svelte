@@ -201,7 +201,7 @@
         e.setOn([0,2,6,8,10,11,12,13,14,15].indexOf(num)>-1)
         f.setOn([0,4,5,6,8,9,10,11,12,14,15].indexOf(num)>-1)
         g.setOn([2,3,4,5,6,8,9,10,11,13,14,15].indexOf(num)>-1)
-        x7447Ports=[crt[12],crt[11],crt[10],crt[9],crt[8],crt[14],crt[13]]
+        x7447Ports=Ports.fromArray([crt[12],crt[11],crt[10],crt[9],crt[8],crt[14],crt[13]])
         x7447Value=num
         console.log("bcd decoder",num)
         gnd.setOn(false)
