@@ -55,6 +55,7 @@
 <h3>{chip.name}</h3>
 <button on:click={e=>scale-=4}>-</button>{scale}<button on:click={e=>scale+=4}>+</button>
 <div>{chip.description}</div>
+<div style="visibility:{chip.stable?'hidden':''}">Stabilizing (count:{count})</div>
 <!--pre>
     stable      :{chip.stable}
     count       :{count}
@@ -95,10 +96,6 @@
     {/each}
 </g>
 </svg>
-{#if !chip.stable}
-<!--rect class="dip-package-body" x={12} y={0} width={1} height={1}/-->
-<div>Stabilizing (count:{count})</div>
-{/if}
 </div>
 
 <style lang="scss">

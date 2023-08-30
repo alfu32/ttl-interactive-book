@@ -289,6 +289,27 @@
         return crt
       }
     })
+    let x7495_data={
+      v:0,
+      u:0,
+    }
+    let x7495=Chip.create({
+      ports:Ports.createPortsFromNames("ser,b,c,vcc,d,mode,clk1,clk2,qd,qc,gnd,qb,qa,a".split(',')),
+      name:"7495",
+      description:"4-bit shift register, parallel in, parallel out, serial input;",
+      changestate:(crt:Ports)=>{
+        const [ser,b,c,vcc,d,mode,clk1,clk2,qd,qc,gnd,qb,qa,a]=crt
+        let v=d.asNum()*8+c.asNum()*4+b.asNum()*2+a.asNum()*1
+        let u=qd.asNum()*8+qc.asNum()*4+qb.asNum()*2+qa.asNum()*1
+        if(clk1.isOn()){
+
+        }
+        x7495_data={v,u}
+        gnd.setOn(false)
+        vcc.setOn(true)
+        return crt
+      }
+    })
 </script>
 
 <main class="dip-card-container">
@@ -339,6 +360,14 @@
         <text class="seven-seg-display-txt" x={8.75} y={-4.5}>A:{x7485_data.a.toString(16)}</text>
         <text class="seven-seg-display-txt" x={8.75} y={-3.5}>B:{x7485_data.b.toString(16)}</text>
         <text class="seven-seg-display-txt" x={8.75} y={-2.5}>S:{(x7485_data.s).toString(16)}</text>
+      </g>
+    </DipPackage>
+    <DipPackage scale={20} chip={x7495}>
+      <g transform="scale(.5)">
+        <SevenSegmentDisplay digit={x7495_data.v} x={22} y={1}/>
+        <SevenSegmentDisplay digit={x7495_data.u} x={22} y={7}/>
+        <BinaryDisplay bits={4} height={0} digit={x7495_data.v} x={26} y={5.5}/>
+        <BinaryDisplay bits={4} height={0} digit={x7495_data.u} x={26} y={11.5}/>
       </g>
     </DipPackage>
 </main>
