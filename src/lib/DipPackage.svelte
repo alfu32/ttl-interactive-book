@@ -1,13 +1,14 @@
 <script lang="ts">
     import {createEventDispatcher, onDestroy, onMount} from "svelte"
-    import type { Port } from "./Port";
+    import type { Port, Ports } from "./Port";
     import Pin from "./Pin.svelte";
     import { Chip } from "./Chip";
     import { Scheduler } from "./Scheduler";
-    export let ports:Array<Port>=[]
+    export let ports:Ports=[]
+    let hist:Array<Ports>=[]
     export let chip:Chip=new Chip()
     $:portnum=chip.ports.length>>1
-    export let scale=16
+    export let scale=24
     let scheduler:Scheduler
     $:u=scale
     let astable=false
@@ -18,7 +19,7 @@
         if(!chip.stable){
         //     return ;//alert("chip is unstable, wait for HALT")
         }
-        console.log("pinToggled",e.detail)
+        //console.log("pinToggled",e.detail)
         chip=chip.next()
         count+=1
         if(!chip.stable){
@@ -45,6 +46,7 @@
 </script>
 <div class="dip-card">
 <h3>{chip.name}</h3>
+<button on:click={e=>scale-=4}>-</button>{scale}<button on:click={e=>scale+=4}>+</button>
 <div>{chip.description}</div>
 <!--pre>
     stable      :{chip.stable}
@@ -52,13 +54,10 @@
     prevState   :{chip.prevState}
     curentState :{chip.curentState}
 </pre-->
-<svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={16*u} height={2*(portnum+2)*u} viewBox="0 0 {16*u} {2*(portnum+2)*u}">
+
+<svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={16*u} height={2*(portnum)*u+2} viewBox="0 0 {16*u} {2*(portnum+2)*u}">
 <g transform="scale({u})">
     <rect class="dip-package-body" x={3} y={1.5} height={2*portnum-1+1} width="5" rx="0.1" />
-    {#if !chip.stable}
-    <!--rect class="dip-package-body" x={12} y={0} width={1} height={1}/-->
-    <text class="dip-text" x={1} y={1}>Stabilizing (count:{count})</text>
-    {/if}
     {#each chip.ports as port,i}
         <Pin port={port} packageNum={portnum} on:toggle={portToggled}/>
     {/each}
@@ -66,6 +65,10 @@
     <slot></slot>
 </g>
 </svg>
+{#if !chip.stable}
+<!--rect class="dip-package-body" x={12} y={0} width={1} height={1}/-->
+<div>Stabilizing (count:{count})</div>
+{/if}
 </div>
 
 <style lang="scss">

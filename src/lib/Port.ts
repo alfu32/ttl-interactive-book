@@ -15,12 +15,6 @@ export class Port{
         p.voltage=c.voltage||0
         return p
     }
-    static createPorts(num:number):Array<Port>{
-        return new Array(num).fill(0).map((v,i) => Port.create({num:i+1}))
-    }
-    static createPortsFromArray(a:Array<string>):Array<Port>{
-        return a.map((v,i) => Port.create({name:v,num:i+1}))
-    }
     isOn():boolean{
         return this.voltage>=3.3
     }
@@ -34,5 +28,14 @@ export class Port{
     setAnalog(value:number):this{
         this.voltage=value
         return this
+    }
+}
+export class Ports extends Array<Port>{
+
+    static createPorts(num:number):Ports{
+        return new Array(num).fill(0).map((v,i) => Port.create({num:i+1}))
+    }
+    static createPortsFromNames(a:Array<string>):Ports{
+        return a.map((v,i) => Port.create({name:v,num:i+1}))
     }
 }
