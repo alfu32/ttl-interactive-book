@@ -1,179 +1,10 @@
 <script lang="ts">
     import BinaryDisplay from "./lib/BinaryDisplay.svelte";
     import { Chip } from "./lib/Chip";
+    import DipChip from "./lib/DipChip.svelte";
     import DipPackage from "./lib/DipPackage.svelte";
     import { Port, Ports } from "./lib/Port";
     import SevenSegmentDisplay from "./lib/SevenSegmentDisplay.svelte";
-    let dingDong=Chip.create({
-      ports:Ports.createPortsFromNames("ding,nding,gnd,dong,ndong,vcc".split(',')),
-      name:"74999",
-      description:"Dual One Bit Ding Dong",
-      changestate:(crt:Ports)=>{
-        const [aa,na,gnd,bb,nb,vcc]=crt
-        if(vcc.isOn()){
-          aa.setOn(!aa.isOn())
-          na.setOn(!aa.isOn())
-          bb.setOn(!bb.isOn())
-          nb.setOn(!bb.isOn())
-          gnd.setOn(false)
-          // vcc.setOn(true)
-        } else {
-          crt.forEach(p => p.setOn(false))
-        }
-        return crt
-      }
-    })
-    let x7400=Chip.create({
-      ports:Ports.createPortsFromNames("a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc".split(',')),
-      name:"7400",
-      description:"Quad Two Input NAND Gate",
-      changestate:(crt:Ports)=>{
-        const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
-        y1.setOn(!(a1.isOn()&&b1.isOn()))
-        y2.setOn(!(a2.isOn()&&b2.isOn()))
-        y3.setOn(!(a3.isOn()&&b3.isOn()))
-        y4.setOn(!(a4.isOn()&&b4.isOn()))
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
-    let x7402=Chip.create({
-      ports:Ports.createPortsFromNames("a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc".split(',')),
-      name:"7402",
-      description:"QUAD 2-INPUT NOR GATE",
-      changestate:(crt:Ports)=>{
-        const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
-        y1.setOn(!(a1.isOn() || b1.isOn()))
-        y2.setOn(!(a2.isOn() || b2.isOn()))
-        y3.setOn(!(a3.isOn() || b3.isOn()))
-        y4.setOn(!(a4.isOn() || b4.isOn()))
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
-    let x7404=Chip.create({
-      ports:Ports.createPortsFromNames("a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc".split(',')),
-      name:"7404",
-      description:"Hex Inverter",
-      changestate:(crt:Ports)=>{
-        const [a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc]=crt
-        y1.setOn(!a1.isOn())
-        y2.setOn(!a2.isOn())
-        y3.setOn(!a3.isOn())
-        y4.setOn(!a4.isOn())
-        y5.setOn(!a5.isOn())
-        y6.setOn(!a6.isOn())
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
-    let x7408=Chip.create({
-      ports:Ports.createPortsFromNames("a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc".split(',')),
-      name:"7408",
-      description:"Quad Two Input AND Gate",
-      changestate:(crt:Ports)=>{
-        const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
-        y1.setOn( a1.isOn() && b1.isOn() )
-        y2.setOn( a2.isOn() && b2.isOn() )
-        y3.setOn( a3.isOn() && b3.isOn() )
-        y4.setOn( a4.isOn() && b4.isOn() )
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
-    let x7410=Chip.create({
-      ports:Ports.createPortsFromNames("a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc".split(',')),
-      name:"7410",
-      description:"Triple 3-Input NAND Gate",
-      changestate:(crt:Ports)=>{
-        const [a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc]=crt
-        y1.setOn(!(a1.isOn()&&b1.isOn()&&c1.isOn()))
-        y2.setOn(!(a2.isOn()&&b2.isOn()&&c2.isOn()))
-        y3.setOn(!(a3.isOn()&&b3.isOn()&&c3.isOn()))
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
-    let x7412=Chip.create({
-      ports:Ports.createPortsFromNames("a1,b1,clr1,nq1,q2,cx2,rx2,gnd,a2,b2,cl2,nq2,q1,cx1,rx1,vcc".split(',')),
-      name:"7412",
-      description:"Dual Retriggerable Monostable Multivibrators",
-      changestate:(crt:Ports)=>{
-        const [a1,b1,clr1,nq1,q2,cx2,rx2,gnd,a2,b2,cl2,nq2,q1,cx1,rx1,vcc]=crt
-        // y1.setOn(!(a1.isOn()&&b1.isOn()&&c1.isOn()))
-        // y2.setOn(!(a2.isOn()&&b2.isOn()&&c2.isOn()))
-        // y3.setOn(!(a3.isOn()&&b3.isOn()&&c3.isOn()))
-        nq1.setOn(!q1.isOn())
-        nq2.setOn(!q2.isOn())
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    }).config(function(self:Chip){
-      const [a1,b1,clr1,nq1,q2,cx2,rx2,gnd,a2,b2,cl2,nq2,q1,cx1,rx1,vcc]=self.ports
-    })
-    let x7413=Chip.create({
-      ports:Ports.createPortsFromNames("a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc".split(',')),
-      name:"7413",
-      description:"SCHMITT TRIGGERS DUAL GATE/HEX INVERTER",
-      changestate:(crt:Ports)=>{
-        const [a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc]=crt
-        y1.setOn(!a1.isOn())
-        y2.setOn(!a2.isOn())
-        y3.setOn(!a3.isOn())
-        y4.setOn(!a4.isOn())
-        y5.setOn(!a5.isOn())
-        y6.setOn(!a6.isOn())
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
-    let x7415=Chip.create({
-      ports:Ports.createPortsFromNames("a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc".split(',')),
-      name:"7415",
-      description:"TRIPLE 3-INPUT AND GATE",
-      changestate:(crt:Ports)=>{
-        const [a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc]=crt
-        y1.setOn(a1.isOn()&&b1.isOn()&&c1.isOn())
-        y2.setOn(a2.isOn()&&b2.isOn()&&c2.isOn())
-        y3.setOn(a3.isOn()&&b3.isOn()&&c3.isOn())
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
-    let x7420=Chip.create({
-      ports:Ports.createPortsFromNames("a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc".split(',')),
-      name:"7420",
-      description:"Dual 4 input NAND Gate",
-      changestate:(crt:Ports)=>{
-        const [a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc]=crt
-        y1.setOn(!(a1.isOn()&&b1.isOn()&&c1.isOn()&&d1.isOn()))
-        y2.setOn(!(a2.isOn()&&b2.isOn()&&c2.isOn()&&d2.isOn()))
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
-    let x7421=Chip.create({
-      ports:Ports.createPortsFromNames("a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc".split(',')),
-      name:"7421",
-      description:"Dual 4 input AND Gate",
-      changestate:(crt:Ports)=>{
-        const [a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc]=crt
-        y1.setOn((a1.isOn()&&b1.isOn()&&c1.isOn()&&d1.isOn()))
-        y2.setOn((a2.isOn()&&b2.isOn()&&c2.isOn()&&d2.isOn()))
-        gnd.setOn(false)
-        vcc.setOn(true)
-        return crt
-      }
-    })
     let x7425=Chip.create({
       ports:Ports.createPortsFromNames("a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc".split(',')),
       name:"7425",
@@ -326,25 +157,211 @@
     })
 </script>
 
-<main class="dip-card-container">
-    <DipPackage scale={20} chip={dingDong}/>
-    <DipPackage scale={20} chip={x7400}/>
-    <DipPackage scale={20} chip={x7402}/>
-    <DipPackage scale={20} chip={x7404}/>
-    <DipPackage scale={20} chip={x7408}/>
-    <DipPackage scale={20} chip={x7410}/>
-    <DipPackage scale={20} chip={x7412}/>
-    <DipPackage scale={20} chip={x7413}/>
-    <DipPackage scale={20} chip={x7415}/>
-    <DipPackage scale={20} chip={x7420}/>
-    <DipPackage scale={20} chip={x7421}/>
-    <DipPackage scale={20} chip={x7425}/>
+<main class="dip-card-container" lang="ts">
+    <DipChip scale={20} name="dingdong" portList="ding,nding,gnd,dong,ndong,vcc"
+    description="dual oscillator flip flop"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+          const [aa,na,gnd,bb,nb,vcc]=crt
+          if(vcc.isOn()){
+            aa.setOn(!aa.isOn())
+            na.setOn(!aa.isOn())
+            bb.setOn(!bb.isOn())
+            nb.setOn(!bb.isOn())
+            gnd.setOn(false)
+          } else {
+            crt.forEach(p => p.setOn(false))
+          }
+        }
+      }
+    />
+    <DipChip scale={20} name="7400" portList="a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc"
+      description="Quad Two Input NAND Gate"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+
+          const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
+          y1.setOn(!(a1.isOn()&&b1.isOn()))
+          y2.setOn(!(a2.isOn()&&b2.isOn()))
+          y3.setOn(!(a3.isOn()&&b3.isOn()))
+          y4.setOn(!(a4.isOn()&&b4.isOn()))
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} name="7402" portList="a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc"
+      description="QUAD 2-INPUT NOR GATE"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+
+          const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
+          y1.setOn(!(a1.isOn() || b1.isOn()))
+          y2.setOn(!(a2.isOn() || b2.isOn()))
+          y3.setOn(!(a3.isOn() || b3.isOn()))
+          y4.setOn(!(a4.isOn() || b4.isOn()))
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc" name="7404"
+      description="Hex Inverter"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+
+          const [a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc]=crt
+          y1.setOn(!a1.isOn())
+          y2.setOn(!a2.isOn())
+          y3.setOn(!a3.isOn())
+          y4.setOn(!a4.isOn())
+          y5.setOn(!a5.isOn())
+          y6.setOn(!a6.isOn())
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc" name="7408"
+      description="Quad Two Input AND Gate"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+
+          const [a1,b1,y1,a2,b2,y2,gnd,y3,a3,b3,y4,a4,b4,vcc]=crt
+          y1.setOn( a1.isOn() && b1.isOn() )
+          y2.setOn( a2.isOn() && b2.isOn() )
+          y3.setOn( a3.isOn() && b3.isOn() )
+          y4.setOn( a4.isOn() && b4.isOn() )
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc" name="7410"
+      description="Triple 3-Input NAND Gate"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+          const [a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc]=crt
+          y1.setOn(!(a1.isOn()&&b1.isOn()&&c1.isOn()))
+          y2.setOn(!(a2.isOn()&&b2.isOn()&&c2.isOn()))
+          y3.setOn(!(a3.isOn()&&b3.isOn()&&c3.isOn()))
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="a1,b1,clr1,nq1,q2,cx2,rx2,gnd,a2,b2,cl2,nq2,q1,cx1,rx1,vcc" name="7412"
+      description="Dual Retriggerable Monostable Multivibrators"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+          const [a1,b1,clr1,nq1,q2,cx2,rx2,gnd,a2,b2,cl2,nq2,q1,cx1,rx1,vcc]=crt
+          nq1.setOn(!q1.isOn())
+          nq2.setOn(!q2.isOn())
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc" name="7413"
+      description="SCHMITT TRIGGERS DUAL GATE/HEX INVERTER"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+          const [a1,y1,a2,y2,a3,y3,gnd,y4,a4,y5,a5,y6,a6,vcc]=crt
+          y1.setOn(!a1.isOn())
+          y2.setOn(!a2.isOn())
+          y3.setOn(!a3.isOn())
+          y4.setOn(!a4.isOn())
+          y5.setOn(!a5.isOn())
+          y6.setOn(!a6.isOn())
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc" name="7415"
+      description="TRIPLE 3-INPUT AND GATE"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+          const [a1,b1,a2,b2,c2,y2,gnd,y3,a3,b3,c3,y1,c1,vcc]=crt
+          y1.setOn(a1.isOn()&&b1.isOn()&&c1.isOn())
+          y2.setOn(a2.isOn()&&b2.isOn()&&c2.isOn())
+          y3.setOn(a3.isOn()&&b3.isOn()&&c3.isOn())
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc" name="7420"
+      description="Dual 4 input NAND Gate"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+          const [a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc]=crt
+          y1.setOn(!(a1.isOn()&&b1.isOn()&&c1.isOn()&&d1.isOn()))
+          y2.setOn(!(a2.isOn()&&b2.isOn()&&c2.isOn()&&d2.isOn()))
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc" name="7421"
+      description="Dual 4 input AND Gate"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+          const [a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc]=crt
+          y1.setOn((a1.isOn()&&b1.isOn()&&c1.isOn()&&d1.isOn()))
+          y2.setOn((a2.isOn()&&b2.isOn()&&c2.isOn()&&d2.isOn()))
+          gnd.setOn(false)
+        }
+      }
+    />
+    <DipChip scale={20} portList="aa1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc" name="7425"
+      description="Dual 4 input NOR Gate"
+      on:statechange={(e) => {
+          console.log(e.detail)
+          const crt=e.detail
+          const [a1,b1,nc3,c1,d1,y1,gnd,y2,a2,b2,nc2,c2,d2,vcc]=crt
+          y1.setOn(!(a1.isOn()||b1.isOn()||c1.isOn()||d1.isOn()))
+          y2.setOn(!(a2.isOn()||b2.isOn()||c2.isOn()||d2.isOn()))
+          gnd.setOn(false)
+        }
+      }
+    />
     <DipPackage scale={20} chip={x7447}>
       <g transform="translate(3,7)">
       <SevenSegmentDisplay digit={x7447Value}/>
       <text class="seven-seg-display-txt" x={.75} y={6.5}>{x7447Value.toString(16)}</text>
       </g>
     </DipPackage>
+    <DipChip scale={20} portList="d2,d3,lt,nbi,nbo,d4,d1,gnd,e,d,c,b,a,g,f,vcc" name="7447"
+      description="BCD-to-Seven-Segment Decoders"
+      on:statechange={(evt) => {
+          console.log(evt.detail)
+          const crt=evt.detail
+          const [d2,d3,lt,nbi,nbo,d4,d1,gnd,e,d,c,b,a,g,f,vcc]=crt
+          const num= (d1.isOn()?1:0) + (d2.isOn()?2:0)+ (d3.isOn()?4:0) + (d4.isOn()?8:0)
+          a.setOn([0,2,3,5,6,7,8,9,10,12,14,15].indexOf(num)>-1)
+          b.setOn([0,1,2,3,4,7,8,9,10,13].indexOf(num)>-1)
+          c.setOn([0,1,3,4,5,6,7,8,9,10,11,13].indexOf(num)>-1)
+          d.setOn([0,2,3,5,6,8,9,11,12,13,14].indexOf(num)>-1)
+          e.setOn([0,2,6,8,10,11,12,13,14,15].indexOf(num)>-1)
+          f.setOn([0,4,5,6,8,9,10,11,12,14,15].indexOf(num)>-1)
+          g.setOn([2,3,4,5,6,8,9,10,11,13,14,15].indexOf(num)>-1)
+          x7447Ports=Ports.fromArray([crt[12],crt[11],crt[10],crt[9],crt[8],crt[14],crt[13]])
+          x7447Value=num
+          console.log("bcd decoder",num)
+          gnd.setOn(false)
+        }
+      }
+      
+    >
+      <pre let:chip={chip} slot="text">{JSON.stringify(chip.ports)}</pre>
+      <g let:ports={ports} slot="canvas" transform="translate(3,7)" >
+        <!--SevenSegmentDisplay digit={chip.ports.numericalValueOf("d1,d2,d3,d4")}/-->
+        <text  class="seven-seg-display-txt" x={.75} y={6.5}>{ports.numericalValueOf("d1,d2,d3,d4").toString(16)}</text>
+      </g>
+    </DipChip>
     <DipPackage scale={20} chip={x7469}>
       <g transform="scale(.5)">
         <SevenSegmentDisplay digit={x7469_data.a} x={24} y={3}/>

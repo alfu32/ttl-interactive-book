@@ -15,7 +15,7 @@
     let astable=false
     let count=0
     function getColor(i:number){
-        const colors="#c00,#c50,#cc0,#0c0,#0c5,#0cc,#00c,#50c,#c0c".split(",")
+        const colors="#f33,#f93,#ff3,#3f3,#3f9,#3ff,#33f,#93f,#f3f".split(",")
         return colors[i%colors.length]
     }
     const dispatch = createEventDispatcher()
@@ -51,17 +51,6 @@
         scheduler.close()
     })
 </script>
-<div class="dip-card">
-<h3>{chip.name}</h3>
-<button on:click={e=>scale-=4}>-</button>{scale}<button on:click={e=>scale+=4}>+</button>
-<div>{chip.description}</div>
-<div style="visibility:{chip.stable?'hidden':''}">Stabilizing (count:{count})</div>
-<!--pre>
-    stable      :{chip.stable}
-    count       :{count}
-    prevState   :{chip.prevState}
-    curentState :{chip.curentState}
-</pre-->
 
 <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={16*u} height={4*(portnum+1)*u+2} viewBox="0 0 {16*u} {4*(portnum+1)*u+2}">
 <g transform="scale({u})">
@@ -70,36 +59,40 @@
         <Pin port={port} packageNum={portnum} on:toggle={portToggled}/>
     {/each}
     <text class="dip-text" transform="rotate(-90)" x={-7} y={5}>{chip.name.padStart(10,'_')}</text>
-    <slot></slot>
-    {#each Object.entries(hist.index) as [name,histo],i}
-    {#if i%portnum === i}
-        <g transform="translate(0 {2*(portnum)+i+2})" stroke={getColor(i)}>
-            <text class="dip-graph-text" x={5} y={0.5}>{name.toUpperCase()}</text>
-            <g transform="translate(0 0.6)">
-                <g transform="scale(1)">
-                    <path class="dip-graph-path" d={histo.svgPath()}/>
-                    <line class="dip-graph-axis" x1={0} y1={0} x2={7.5} y2={0}/>
+    <slot ports={chip.ports.copy()}></slot>
+    <g transform="translate(0 {2*(portnum)+1})">
+        <rect class=graph x={-1} y={1.5} width={25} height={portnum+.7}/> 
+        {#each Object.entries(hist.index) as [name,histo],i}
+        {#if i%portnum === i}
+            <g transform="translate(.5 {i+2})" stroke={getColor(i)}>
+                <text class="dip-graph-text" x={5} y={0.5}>{name.toUpperCase()}</text>
+                <g transform="translate(0 0.6)">
+                    <g transform="scale(1)">
+                        <path class="dip-graph-path" d={histo.svgPath()}/>
+                        <line class="dip-graph-axis" x1={0} y1={0} x2={7.5} y2={0}/>
+                    </g>
                 </g>
             </g>
-        </g>
-    {:else}
-        <g transform="translate(8 {3*(portnum)-(i%portnum)+1})" stroke={getColor(i)}>
-            <text class="dip-graph-text" x={0} y={0.5}>{name.toUpperCase()}</text>
-            <g transform="translate(2.5 0.6)">
-                <g transform="scale(1)">
-                    <path class="dip-graph-path" d={histo.svgPath()}/>
-                    <line class="dip-graph-axis" x1={-2.5} y1={0} x2={5} y2={0}/>
+        {:else}
+            <g transform="translate(8.5 {(portnum)-(i%portnum)+1})" stroke={getColor(i)}>
+                <text class="dip-graph-text" x={0} y={0.5}>{name.toUpperCase()}</text>
+                <g transform="translate(2.5 0.6)">
+                    <g transform="scale(1)">
+                        <path class="dip-graph-path" d={histo.svgPath()}/>
+                        <line class="dip-graph-axis" x1={-2.5} y1={0} x2={5} y2={0}/>
+                    </g>
                 </g>
             </g>
-        </g>
-    {/if}
-    {/each}
+        {/if}
+        {/each}
+    </g>
 </g>
 </svg>
-</div>
 
 <style lang="scss">
-
+    .graph{
+        fill: #000;
+    }
 
     .dip-card {
         /* Define the width and height for the cards */
@@ -144,11 +137,11 @@
         font-family: 'Courier New', Courier, monospace;
     }
     .dip-graph-path{
-        stroke-width:.025;
+        stroke-width:.05;
         fill:#0000;
     }
     .dip-graph-axis{
-        stroke:#000;
+        stroke:#333;
         stroke-width:.0125;
         fill:#0000;
     }

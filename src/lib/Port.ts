@@ -53,6 +53,27 @@ export class Ports extends Array<Port>{
     static createPortsFromNames(a:Array<string>):Ports{
         return Ports.fromArray(a.map((v,i) => Port.create({name:v,num:i+1})))
     }
+    groupBy(key:string):{[key:string]:Port}{
+        return this.reduce(
+            (acc:{[key:string]:Port},v:Port,i,a) => {
+                acc[v.name]=v
+                return acc
+            },
+            {} as {[key:string]:Port}
+        )
+    }
+    numericalValueOf(portNamesList:string):number{
+        return Math.floor(Math.random()*16)
+        return portNamesList.split(",").reduce(
+            (value,v,i,a) => {
+                const port = this.find((p)=>p.name===v)
+                if(port!==null){
+                    value+=(port?.isOn()?1:0)<<Math.pow(2,i)
+                }
+                return value
+            },0
+        )
+    }
 }
 export declare type bit=0|1
 export declare type HistoryPoint={timestamp:number,value:bit}
