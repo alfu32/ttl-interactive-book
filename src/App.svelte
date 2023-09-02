@@ -164,15 +164,11 @@
           console.log(e.detail)
           const crt=e.detail
           const [aa,na,gnd,bb,nb,vcc]=crt
-          if(vcc.isOn()){
-            aa.setOn(!aa.isOn())
-            na.setOn(!aa.isOn())
-            bb.setOn(!bb.isOn())
-            nb.setOn(!bb.isOn())
-            gnd.setOn(false)
-          } else {
-            crt.forEach(p => p.setOn(false))
-          }
+          aa.setOn(!aa.isOn())
+          na.setOn(!aa.isOn())
+          bb.setOn(!bb.isOn())
+          nb.setOn(!bb.isOn())
+          gnd.setOn(false)
         }
       }
     />
