@@ -50,6 +50,9 @@
         console.log("destroyed",chip.name)
         scheduler.close()
     })
+    function getChipState():Chip{
+        return chip.clone()
+    }
 </script>
 
 <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width={16*u} height={4*(portnum+1)*u+2} viewBox="0 0 {16*u} {4*(portnum+1)*u+2}">
@@ -59,7 +62,7 @@
         <Pin port={port} packageNum={portnum} on:toggle={portToggled}/>
     {/each}
     <text class="dip-text" transform="rotate(-90)" x={-7} y={5}>{chip.name.padStart(10,'_')}</text>
-    <slot ports={chip.ports.copy()}></slot>
+    <slot cs={getChipState}></slot>
     <g transform="translate(0 {2*(portnum)+1})">
         <rect class=graph x={-1} y={1.5} width={25} height={portnum+.7}/> 
         {#each Object.entries(hist.index) as [name,histo],i}

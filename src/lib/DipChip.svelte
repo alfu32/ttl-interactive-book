@@ -46,13 +46,16 @@
             to=setTimeout(()=>{stable=true},1000)
         }
     }
+    function getChipState():Chip{
+        return chip.clone()
+    }
 </script>
 <div class="dip-card">
 <h3>{chip.name}</h3>
 <button on:click={e=>scale-=4}>-</button>{scale}<button on:click={e=>scale+=4}>+</button>
 <div>{chip.description}</div>
 <div class={stable?'stable':'astable'}>{stable?'Stable_____':'Stabilizing'} (count:{count})</div>
-<slot chip={chip.clone()} name="text"></slot>
+<slot cs={getChipState} name="text"></slot>
 <!--pre>
     stable      :{chip.stable}
     count       :{count}
@@ -60,7 +63,7 @@
     curentState :{chip.curentState}
 </pre-->
 <DipPackage chip={chip} scale={scale} on:statechanged={chipChanged}>
-    <slot ports={chip.ports.copy()} name="canvas"></slot>
+    <slot cs={getChipState} name="canvas"></slot>
 </DipPackage>
 </div>
 

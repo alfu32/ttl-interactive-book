@@ -336,7 +336,7 @@
           console.log(evt.detail)
           const crt=evt.detail
           const [d2,d3,lt,nbi,nbo,d4,d1,gnd,e,d,c,b,a,g,f,vcc]=crt
-          const num= (d1.isOn()?1:0) + (d2.isOn()?2:0)+ (d3.isOn()?4:0) + (d4.isOn()?8:0)
+          const num= crt.numericalValueOf("d1,d2,d3,d4")
           a.setOn([0,2,3,5,6,7,8,9,10,12,14,15].indexOf(num)>-1)
           b.setOn([0,1,2,3,4,7,8,9,10,13].indexOf(num)>-1)
           c.setOn([0,1,3,4,5,6,7,8,9,10,11,13].indexOf(num)>-1)
@@ -344,18 +344,17 @@
           e.setOn([0,2,6,8,10,11,12,13,14,15].indexOf(num)>-1)
           f.setOn([0,4,5,6,8,9,10,11,12,14,15].indexOf(num)>-1)
           g.setOn([2,3,4,5,6,8,9,10,11,13,14,15].indexOf(num)>-1)
-          x7447Ports=Ports.fromArray([crt[12],crt[11],crt[10],crt[9],crt[8],crt[14],crt[13]])
+          x7447Ports=crt.extract("a,b,c,d,e,f,g")
           x7447Value=num
-          console.log("bcd decoder",num)
           gnd.setOn(false)
         }
       }
       
     >
-      <pre let:chip={chip} slot="text">{JSON.stringify(chip.ports)}</pre>
-      <g let:ports={ports} slot="canvas" transform="translate(3,7)" >
-        <!--SevenSegmentDisplay digit={chip.ports.numericalValueOf("d1,d2,d3,d4")}/-->
-        <text  class="seven-seg-display-txt" x={.75} y={6.5}>{ports.numericalValueOf("d1,d2,d3,d4").toString(16)}</text>
+      <pre let:cs={cs} slot="text">{JSON.stringify(cs().ports.map(p => [p.name,p.isOn()?1:0]))}</pre>
+      <g let:cs={cs} slot="canvas" transform="translate(3,7)" >
+        <SevenSegmentDisplay digit={cs().ports.numericalValueOf("a,b,c,d,e,f,g")}/>
+        <text  class="seven-seg-display-txt" x={.75} y={6.5}>{cs().ports.numericalValueOf("d1,d2,d3,d4").toString(16)}</text>
       </g>
     </DipChip>
     <DipPackage scale={20} chip={x7469}>

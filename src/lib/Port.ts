@@ -63,15 +63,28 @@ export class Ports extends Array<Port>{
         )
     }
     numericalValueOf(portNamesList:string):number{
-        return Math.floor(Math.random()*16)
+        // return Math.floor(Math.random()*16)
         return portNamesList.split(",").reduce(
             (value,v,i,a) => {
                 const port = this.find((p)=>p.name===v)
                 if(port!==null){
-                    value+=(port?.isOn()?1:0)<<Math.pow(2,i)
+                    const v=(port?.isOn()?1:0)
+                    const exp=Math.pow(2,i)
+                    value+=(v<<i)
                 }
                 return value
             },0
+        )
+    }
+    extract(portNamesList:string):Ports{
+        return portNamesList.split(",").reduce(
+            (ports,v,i,a) => {
+                const port = this.find((p)=>p.name===v)
+                if(port!==null){
+                    ports.push(port as Port)
+                }
+                return ports
+            },new Ports()
         )
     }
 }
